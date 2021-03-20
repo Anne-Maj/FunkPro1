@@ -54,8 +54,6 @@ update message model =
                 Err error ->
                     (Failure (errorToString error), Cmd.none)
 
-
-
 -- VIEW
 
 view : Model -> Html Message
@@ -72,13 +70,13 @@ view model =
 
         Success employees ->
             div [ style "text-align" "center" ]
-                [ table tableStyle
+                [ table []
                     [ thead []
-                        [ tr trStyle
-                            [ th trStyle [ text "ID" ]
-                            , th trStyle [ text "First Name" ]
-                            , th trStyle [ text "Last Name" ]
-                            , th trStyle [ text "Email" ]
+                        [ tr []
+                            [ th [] [ text "ID" ]
+                            , th [] [ text "First Name" ]
+                            , th [] [ text "Last Name" ]
+                            , th [] [ text "Email" ]
 
                             ]
                         ]
@@ -87,24 +85,14 @@ view model =
                 , button [onClick TryAgainPlease] [text "All Employees"]
                 ]
 
-tableStyle : List (Attribute msg)
-tableStyle =
-    [ style "border-collapse" "collapse"
-    , style "width" "100%"
-    , style  "border" "1px solid black"
-    ]
-trStyle : List (Attribute msg)
-trStyle =
-    [style "border" "1px solid black"]
-
 
 viewEmployee : Employee -> Html Message
 viewEmployee employee =
-    tr trStyle
-        [ td trStyle [ text <| String.fromInt employee.id ]
-        , td trStyle [ text employee.firstName ]
-        , td trStyle [ text employee.lastName ]
-        , td trStyle [ text employee.email ]
+    tr []
+        [ td [] [ text <| String.fromInt employee.id ]
+        , td [] [ text employee.firstName ]
+        , td [] [ text employee.lastName ]
+        , td [] [ text employee.email ]
 
         ]
 
@@ -127,7 +115,6 @@ getEmployees = Http.get
     { url = "http://localhost:8080/org/api/org/empl"
     , expect = Http.expectJson EmployeeResult allEmployeesDecoder
     }
-
 
 type alias Employee =
     {
@@ -157,9 +144,6 @@ encodeEmployee employee=
 allEmployeesDecoder: Decode.Decoder (List Employee)
 allEmployeesDecoder =
     Decode.list employeeDecoder
-
-
-
 
 subscriptions : Model -> Sub Message
 subscriptions _ =

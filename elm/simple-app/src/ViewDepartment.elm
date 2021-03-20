@@ -20,9 +20,6 @@ main =
 
 -- MODEL--
 
-
-
-
 type Model
     = Failure String
     | Waiting
@@ -31,7 +28,7 @@ type Model
 
 
 type Message
-    = TryAgainPlease
+    = TryAgain
     | DepartmentResult (Result Http.Error (List Department))
 
 
@@ -58,7 +55,7 @@ errorToString error =
 update : Message -> Model -> ( Model, Cmd Message )
 update message model =
     case message of
-        TryAgainPlease ->
+        TryAgain ->
             ( Loading, getDepartments )
 
         DepartmentResult result ->
@@ -69,58 +66,43 @@ update message model =
                 Err error ->
                     (Failure (errorToString error), Cmd.none)
 
-
-
 -- VIEW
 
 view : Model -> Html Message
 view model =
     case model of
         Waiting ->
-            button [ onClick TryAgainPlease ] [ text "View Departments" ]
+            button [ onClick TryAgain ] [ text "View Departments" ]
 
         Failure msg ->
             text ("Something went wrong " ++ msg)
 
         Loading ->
-            text "Please wait ...."
+            text "Loading...."
 
         Success departments ->
             div [ style "text-align" "center" ]
-                [ table tableStyle
+                [ table []
                     [ thead []
-                        [ tr trStyle
-                            [ th trStyle [ text "Code" ]
-                            , th trStyle [ text "Name" ]
-                            , th trStyle [ text "Description" ]
+                        [ tr []
+                            [ th [] [ text "Code" ]
+                            , th [] [ text "Name" ]
+                            , th [] [ text "Description" ]
                             ]
                         ]
                     , tbody [] (List.map viewDepartment departments)
                     ]
-                , button [onClick TryAgainPlease] [text "View Departments"]
+                , button [onClick TryAgain] [text "View Departments"]
                 ]
-
-tableStyle : List (Attribute msg)
-tableStyle =
-    [ style "border-collapse" "collapse"
-    , style "width" "100%"
-    , style  "border" "1px solid black"
-    ]
-trStyle : List (Attribute msg)
-trStyle =
-    [style "border" "1px solid black"]
-
 
 viewDepartment : Department -> Html Message
 viewDepartment department =
-    tr trStyle
-        [ td trStyle [ text <| String.fromInt department.code ]
-        , td trStyle [ text department.name ]
-        , td trStyle [ text department.description ]
+    tr []
+        [ td [] [ text <| String.fromInt department.code ]
+        , td [] [ text department.name ]
+        , td [] [ text department.description ]
 
         ]
-
-
 
 getDepartments : Cmd Message
 getDepartments = Http.get
@@ -137,14 +119,12 @@ type alias Department =
 
     }
 
-
 departmentDecoder: Decode.Decoder Department
 departmentDecoder =
        Decode.map3 Department
        (Decode.field "code" Decode.int)
        (Decode.field "name" Decode.string)
        (Decode.field "description" Decode.string)
-
 
 
 encodeDepartment : Department -> Encode.Value
@@ -157,9 +137,6 @@ encodeDepartment department=
 allDepartmentsDecoder: Decode.Decoder (List Department)
 allDepartmentsDecoder =
     Decode.list departmentDecoder
-
-
-
 
 subscriptions : Model -> Sub Message
 subscriptions _ =
