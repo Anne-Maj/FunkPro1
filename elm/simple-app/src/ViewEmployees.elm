@@ -36,14 +36,14 @@ type Model
 
 
 type Message
-    = TryAgainPlease
+    = TryAgain
     | EmployeeResult (Result Http.Error (List Employee))
 
 
 update : Message -> Model -> ( Model, Cmd Message )
 update message model =
     case message of
-        TryAgainPlease ->
+        TryAgain ->
             ( Loading, getEmployees )
 
         EmployeeResult result ->
@@ -60,13 +60,13 @@ view : Model -> Html Message
 view model =
     case model of
         Waiting ->
-            button [ onClick TryAgainPlease ] [ text "All Employees" ]
+            button [ onClick TryAgain ] [ text "All Employees" ]
 
         Failure msg ->
-            text ("Something went wrong " ++ msg)
+            text ("Failure! " ++ msg)
 
         Loading ->
-            text "Please wait ...."
+            text "Loading..."
 
         Success employees ->
             div [ style "text-align" "center" ]
@@ -82,7 +82,7 @@ view model =
                         ]
                     , tbody [] (List.map viewEmployee employees)
                     ]
-                , button [onClick TryAgainPlease] [text "All Employees"]
+                , button [onClick TryAgain] [text "All Employees"]
                 ]
 
 
@@ -122,6 +122,13 @@ type alias Employee =
     ,firstName: String
     ,lastName: String
     ,email: String
+    --,projects: List String
+    }
+
+type alias Project =
+    {
+     name: String
+    ,description: String
     }
 
 
@@ -144,6 +151,11 @@ encodeEmployee employee=
 allEmployeesDecoder: Decode.Decoder (List Employee)
 allEmployeesDecoder =
     Decode.list employeeDecoder
+
+
+--ProjectsDecoder: Decode.Decoder (List Project)
+--projectsDecoder =
+--    Decode.list projectDecoder
 
 subscriptions : Model -> Sub Message
 subscriptions _ =

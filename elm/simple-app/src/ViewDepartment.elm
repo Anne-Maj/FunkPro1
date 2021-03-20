@@ -75,7 +75,7 @@ view model =
             button [ onClick TryAgain ] [ text "View Departments" ]
 
         Failure msg ->
-            text ("Something went wrong " ++ msg)
+            text ("Failure! " ++ msg)
 
         Loading ->
             text "Loading...."
