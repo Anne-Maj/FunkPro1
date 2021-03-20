@@ -1,0 +1,65 @@
+# This YAML file describes your package. Stack will automatically generate a
+# Cabal file when you run `stack build`. See the hpack website for help with
+# this file: <https://github.com/sol/hpack>.
+name: hello-haskell
+version: '0.0.0'
+github: "githubuser/hello-haskell"
+license: MIT
+author: "Author name here"
+maintainer: "Author name here"
+# synopsis: A new Haskeleton package.
+# description: hello-haskell is a new Haskeleton package.
+# category: Other
+
+extra-source-files:
+- CHANGELOG.md
+- LICENSE.md
+- package.yaml
+- README.md
+- stack.yaml
+
+ghc-options: -Wall
+
+library:
+  dependencies:
+  - base
+  source-dirs: library
+
+executables:
+  hello-haskell:
+    source-dirs: executable
+    main: Main.hs
+    dependencies:
+    - base
+    - hello-haskell
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+
+benchmarks:
+  hello-haskell-benchmarks:
+    source-dirs: benchmark
+    main: Main.hs
+    dependencies:
+    - base
+    - hello-haskell
+    - criterion
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+
+tests:
+  hello-haskell-test-suite:
+    source-dirs: test-suite
+    main: Main.hs
+    dependencies:
+    - base
+    - hello-haskell
+    - tasty
+    - tasty-hspec
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
